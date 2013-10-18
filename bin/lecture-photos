@@ -39,15 +39,15 @@ def main():
     options = _parse_args()
 
     # TODO Add -vv CLI argument.
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     pattern = re.compile(r"/([^/]+)/Vorlesungsfotos/(\d{4}-\d{2}-\d{2}(:?_\w{2})?)$")
 
-    output = subprocess.check_output(["find", os.path.expanduser("~/Dokumente/Studium"), "-type", "d", "-print0"])
+    output = subprocess.check_output(["find", os.path.expanduser("~/Dokumente/Studium"), "-maxdepth", "3", "-type", "d", "-print0"])
     folders = output.decode().strip().split("\0")
 
     for dirpath in folders:
-        logger.debug("In folder {}.".format(dirpath))
+        logger.debug("{}.".format(dirpath))
         m = pattern.search(dirpath)
         if m is not None:
             module = m.group(1)
