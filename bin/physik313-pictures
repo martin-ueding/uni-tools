@@ -1,0 +1,15 @@
+#!/bin/bash
+# Copyright © 2013 Martin Ueding <dev@martin-ueding.de>
+
+set -e
+set -u
+
+for i in IMG_????.JPG
+do
+	number="${i#IMG_}"
+	number="${number%.JPG}"
+	number="${number##0}"
+	echo "$number"
+
+	convert "$i" -resize 1500x1500 $number.jpg
+done

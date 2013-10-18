@@ -1,0 +1,23 @@
+#!/bin/bash
+# Copyright (c) 2011 Martin Ueding <dev@martin-ueding.de>
+
+set -e
+set -u
+
+handle() {
+	if pgrep vpnc > /dev/null
+	then
+		echo "Stopping VPN Client …"
+		sudo vpnc-disconnect
+	else
+		echo "Need to start VPN Client."
+		sudo vpnc "$1"
+	fi
+}
+
+if [[ "${1:-}" == wlan ]]
+then
+	handle $HOME/.vpnc/unibn-wlan.conf
+else
+	handle $HOME/.vpnc/unibn-vpn.conf
+fi
