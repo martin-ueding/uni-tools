@@ -33,7 +33,7 @@ class Lecture(object):
 
 def upload():
     logger.info("Starting upload.")
-    subprocess.check_call(["rsync", "-avhE", "--delete", "--progress", "--exclude=*.*", os.path.expanduser("~/.cache/lecture-photos"), "chaos:public_html/"])
+    subprocess.check_call(["rsync", "-avhE", "--delete", "--progress", "--exclude=.*", "--exclude=*.php", "--exclude=*.css", os.path.expanduser("~/.cache/lecture-photos"), "chaos:public_html/"])
 
 def main():
     options = _parse_args()
