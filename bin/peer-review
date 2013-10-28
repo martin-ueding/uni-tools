@@ -27,8 +27,8 @@ Root folder.
 """
 
 modules = [
-    "physik411",
-    "physik421",
+    "physik511",
+    "physik521",
 ]
 """
 List of the current modules.
