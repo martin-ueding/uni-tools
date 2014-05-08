@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.3
+    Released: 2014-05-08
+
+    - Copy files with ``reviewed`` as well.
+
 v1.2
     - **Removed**: *lecture-photos*
 
