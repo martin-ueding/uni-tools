@@ -13,6 +13,8 @@ import re
 import subprocess
 import tempfile
 
+import jinja2
+
 PDF_PATTERN = re.compile(r'''
                          (?P<module>(math|physik|physics)\d{3})
                          -[^-]+
@@ -23,6 +25,113 @@ PDF_PATTERN = re.compile(r'''
 '''
 Matches filenames.
 '''
+
+TEXT_DE = r'''
+\section*{Vorbemerkung}
+
+Dies ist
+{% if reviewed -%}
+    {% if is_report -%}
+    ein korrigierters Praktikumsprotokoll
+    {% else -%}
+    ein korrigierter Übungszettel
+    {% endif -%}
+{% else -%}
+    {% if is_report -%}
+    ein abgegebenes Praktikumsprotokoll
+    {% else -%}
+    ein abgegebener Übungszettel
+    {% endif -%}
+{% endif -%}
+aus dem Modul {{ module }}.
+
+{% if reviewed -%}
+    {% if is_report -%}
+    Dieses Praktikumsprotokoll
+    {% else -%}
+    Dieser Übungszettel
+    {% endif -%}
+    wurde von einem Tutor korrigiert. \emph{Dies
+    bedeutet jedoch nicht, dass es sich um eine Musterlösung handelt. Weder
+    ich, noch der Tutor implizieren, dass dieses Dokument keine Fehler
+    enthält.}
+{% else -%}
+    {% if is_report -%}
+    Dieses Praktikumsprotokoll wurde nicht bewertet.
+    {% else -%}
+    Dieser Übungszettel wurde nicht korrigiert.
+    {% endif -%}
+    Es handelt sich lediglich um meine Abgabe und keine Musterlösung.
+{% endif %}
+
+Alle
+{% if is_report -%}
+Praktikumsprotokolle
+{% else -%}
+Übungszettel
+{% endif -%}
+zu diesem Modul können auf \url{http://martin-ueding.de/de/university/{{ module
+}}/} gefunden werden.
+
+Dieses Werk von Martin Ueding ist lizenziert unter einer
+\href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative
+Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0
+International Lizenz}.
+'''
+
+TEXT_EN = r'''
+\section*{Disclaimer}
+
+This is
+{% if reviewed -%}
+    {% if is_report -%}
+    a reviewed lab report
+    {% else -%}
+    a reviewed problem set
+    {% endif -%}
+{% else -%}
+    {% if is_report -%}
+    a lab report (as turned in)
+    {% else -%}
+    a problem set (as turned in)
+    {% endif -%}
+{% endif -%}
+for the module {{ module }}.
+
+This
+{% if reviewed -%}
+    {% if is_report -%}
+    lab report
+    {% else -%}
+    problem set
+    {% endif -%}
+    was reviewed by a tutor. \emph{This does not mean, that it is a perfect
+    solution. Neither I or the tutor imply that there are no further mistakes
+    in this document.}
+{% else -%}
+    {% if is_report -%}
+    lab report is not reviewed by a tutor.
+    {% else -%}
+    problem set is not reviewed by a tutor.
+    {% endif -%}
+    This is just what I have turned in.
+{% endif %}
+
+All
+{% if is_report -%}
+lab reports
+{% else -%}
+problem sets
+{% endif -%}
+for this module can be found at \url{http://martin-ueding.de/en/university/{{ module
+}}/}.
+
+This work by Martin Ueding is licensed under a
+\href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons
+Attribution-ShareAlike 4.0 International License}.
+'''
+
+TEMPLATE_DE = jinja2.Template(TEXT_DE)
 
 def get_kind(filename):
     '''
@@ -82,43 +191,10 @@ def create_document(title, text):
 def create_text(module, language, reviewed):
     title = ''
     text = ''
-    if language == 'de' and reviewed:
-        text = r'''
-        \section*{{Vorbemerkung}}
-
-        Dies ist ein korrigierter Übungszettel aus dem Modul {module}.
-
-        Alle Übungszettel zu diesem Modul können auf
-        \url{{http://martin-ueding.de/de/university/{module}/}} gefunden werden.
-
-        Dieser Übungszettel wurde von einem Tutor korrigiert. \emph{{Dies
-        bedeutet jedoch nicht, dass es sich um eine Musterlösung handelt. Weder
-        ich, noch der Tutor implizieren, dass dieses Dokument keine Fehler
-        enthält.}}
-
-        Dieses Werk von Martin Ueding ist lizenziert unter einer
-        \href{{http://creativecommons.org/licenses/by-sa/4.0/}}{{Creative
-        Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0
-        International Lizenz}}.
-        '''.format(module=module)
-
-    elif language == 'de' and not reviewed:
-        text = r'''
-        \section*{{Vorbemerkung}}
-        Dies ist ein Übungszettel aus dem Modul {module}, den ich so abgegeben
-        habe.
-
-        Alle Übungszettel zu diesem Modul können auf
-        \url{{http://martin-ueding.de/de/university/{module}/}} gefunden werden.
-
-        \emph{{Dieser Übungszettel wurde nicht korrigiert. Es handelt sich
-        lediglich um meine Abgabe und keine Musterlösung.}}
-
-        Dieses Werk von Martin Ueding ist lizenziert unter einer
-        \href{{http://creativecommons.org/licenses/by-sa/4.0/}}{{Creative
-        Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0
-        International Lizenz}}.
-        '''.format(module=module)
+    is_report = module[-2] == '1' and module[-1] in ['2', '3']
+    if language == 'de':
+        text = TEMPLATE_DE.render(module=module, reviewed=reviewed,
+                                  is_report=is_report)
     else:
         text = 'x'
 
