@@ -133,13 +133,22 @@ def create_disclaimer_pdf(text):
         command = ['bash', '-c', 'cd {} && pdflatex -batchmode {}'.format(os.path.dirname(tf.name), tf.name)]
         print(command)
         subprocess.check_call(command)
-        subprocess.check_call(['okular', tf.name.replace('.tex', '.pdf')])
+
+    return tf.name.replace('.tex', '.pdf')
+
+def has_disclaimer(filename):
+    status = subprocess.call(['pdfgrep', r'\[disclaimer\]', filename])
+    return status == 0
 
 def handle_file(filename):
+    if has_disclaimer(filename):
+        return
+
     module, language, reviewed = get_kind(os.path.basename(filename))
     title, text = create_text(module, language, reviewed)
     text = create_document(title, text)
-    create_disclaimer_pdf(text)
+    disclaimer_pdf = create_disclaimer_pdf(text)
+    subprocess.check_call(['pdfunite', disclaimer_pdf, filename, filename+'-d.pdf'])
 
 def main():
     options = _parse_args()
