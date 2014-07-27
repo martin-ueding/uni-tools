@@ -8,6 +8,7 @@ Prepends a disclaimer page to all PDF files.
 '''
 
 import argparse
+import concurrent.futures
 import os.path
 import re
 import subprocess
@@ -105,7 +106,7 @@ This
     {% else -%}
     problem set
     {% endif -%}
-    was reviewed by a tutor. \emph{This does not mean, that it is a perfect
+    was reviewed by a tutor. \emph{This does not mean that it is a perfect
     solution. Neither I or the tutor imply that there are no further mistakes
     in this document.}
 {% else -%}
@@ -132,6 +133,7 @@ Attribution-ShareAlike 4.0 International License}.
 '''
 
 TEMPLATE_DE = jinja2.Template(TEXT_DE)
+TEMPLATE_EN = jinja2.Template(TEXT_EN)
 
 def get_kind(filename):
     '''
@@ -196,7 +198,8 @@ def create_text(module, language, reviewed):
         text = TEMPLATE_DE.render(module=module, reviewed=reviewed,
                                   is_report=is_report)
     else:
-        text = 'x'
+        text = TEMPLATE_EN.render(module=module, reviewed=reviewed,
+                                  is_report=is_report)
 
     return title, text
 
@@ -229,8 +232,11 @@ def handle_file(filename):
 def main():
     options = _parse_args()
 
-    for filename in options.filenames:
-        handle_file(filename)
+    futures = []
+
+    with concurrent.futures.ThreadPoolExecutor(6) as executor:
+        for filename in options.filenames:
+            futures.append(executor.submit(handle_file, filename))
 
 def _parse_args():
     """
