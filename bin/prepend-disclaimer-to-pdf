@@ -11,6 +11,7 @@ import argparse
 import concurrent.futures
 import os.path
 import re
+import shutil
 import subprocess
 import tempfile
 
@@ -74,10 +75,11 @@ Praktikumsprotokolle
 zu diesem Modul können auf \url{http://martin-ueding.de/de/university/{{ module
 }}/} gefunden werden.
 
-Dieses Werk von Martin Ueding ist lizenziert unter einer
-\href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative
-Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0
-International Lizenz}.
+Sofern im Dokuments nichts anderes angegeben ist: Dieses Werk von Martin Ueding
+ist lizenziert unter einer
+\href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons
+Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International
+Lizenz}.
 '''
 
 TEXT_EN = r'''
@@ -127,9 +129,9 @@ problem sets
 for this module can be found at \url{http://martin-ueding.de/en/university/{{ module
 }}/}.
 
-This work by Martin Ueding is licensed under a
-\href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons
-Attribution-ShareAlike 4.0 International License}.
+If not stated otherwise in the document itself: This work by Martin Ueding is
+licensed under a \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative
+Commons Attribution-ShareAlike 4.0 International License}.
 '''
 
 TEMPLATE_DE = jinja2.Template(TEXT_DE)
@@ -227,7 +229,9 @@ def handle_file(filename):
     title, text = create_text(module, language, reviewed)
     text = create_document(title, text)
     disclaimer_pdf = create_disclaimer_pdf(text)
-    subprocess.check_call(['pdfunite', disclaimer_pdf, filename, filename+'-d.pdf'])
+    old_file = filename+'.bak'
+    shutil.move(filename, old_file)
+    subprocess.check_call(['pdfunite', disclaimer_pdf, old_file, filename])
 
 def main():
     options = _parse_args()
