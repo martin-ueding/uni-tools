@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.5.1
+    Released: 2014-11-17
+
+    - Use color for links again.
+
 v1.5
     Released: 2014-09-06
 
