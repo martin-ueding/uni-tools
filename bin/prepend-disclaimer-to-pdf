@@ -176,7 +176,7 @@ def get_kind(filename):
 def create_document(title, text):
     text = r'''
     \documentclass[11pt, ngerman]{{scrartcl}}
-    \usepackage{{/home/mu/Vorlagen/header}}
+    \usepackage[color]{{/home/mu/Vorlagen/header}}
     \pagestyle{{empty}}
     \pagecolor{{YellowOrange!60}}
     {title}
