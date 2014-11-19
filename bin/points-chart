@@ -1,0 +1,71 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+# Copyright © 2014 Martin Ueding <dev@martin-ueding.de>
+
+import argparse
+
+import numpy as np
+import matplotlib.pyplot as pl
+
+def main():
+    options = _parse_args()
+
+    data = np.loadtxt(options.filename)
+
+    sheet = data[:, 0]
+    obtained = data[:, 1]
+    obtainable = data[:, 2]
+
+    done = obtained > 0
+
+    fig = pl.figure()
+    ax1 = fig.add_subplot(2, 1, 1)
+    ax2 = fig.add_subplot(2, 1, 2)
+
+    style = {
+        'marker': 'o',
+    }
+
+    ax1.set_title('Problem set results for {}'.format(options.module))
+
+    ax1.plot(sheet[done], obtained[done], label='obtained', **style)
+    ax1.plot(sheet, obtainable, label='obtainable', **style)
+    ax1.set_ylabel('Points')
+    ax1.legend(loc='best')
+    ax1.grid(True)
+    ax1.margins(0.05, 0.05)
+    ax1.set_ylim(max(obtainable) * -0.05, max(obtainable) * 1.05)
+
+    ax2.plot(sheet[done], obtained[done] / obtainable[done], **style)
+    ax2.set_xlabel('Problem set')
+    ax2.set_ylabel('Obtained ratio')
+    ax2.grid(True)
+    ax2.set_xlim(ax1.get_xlim())
+    ax2.set_ylim([-0.05, 1.05])
+
+    fig.tight_layout()
+
+    fig.savefig('points-{}.pdf'.format(options.module))
+
+    print('Number of problem sets done:', len(done))
+    print('Obtained points:', sum(obtained))
+    print('Obtainable on done sets:', sum(obtainable[done]))
+    print('Ratio on done sets: {:.2f}'.format(sum(obtained[done]) / sum(obtainable[done])))
+
+def _parse_args():
+    '''
+    Parses the command line arguments.
+
+    :return: Namespace with arguments.
+    :rtype: Namespace
+    '''
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('filename')
+    parser.add_argument('module')
+    options = parser.parse_args()
+
+    return options
+
+if __name__ == '__main__':
+    main()
