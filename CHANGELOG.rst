@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.6
+    Released: 2014-11-19
+
+    - Add ``points-chart`` script.
+
 v1.5.1
     Released: 2014-11-17
 
