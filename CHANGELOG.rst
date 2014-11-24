@@ -5,8 +5,9 @@ Changelog
 #########
 
 v1.7
-    Released:
+    Released: 2014-11-24
 
+    - Remove backup files
     - Add ``upload-zettel`` script
 
 v1.6
