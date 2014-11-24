@@ -9,6 +9,7 @@ Prepends a disclaimer page to all PDF files.
 
 import argparse
 import concurrent.futures
+import os
 import os.path
 import re
 import shutil
@@ -244,6 +245,7 @@ def handle_file(filename, options):
         'output', filename,
     ]
     subprocess.check_call(command)
+    os.oremove(old_file)
 
 def main():
     options = _parse_args()
