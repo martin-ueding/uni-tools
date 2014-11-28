@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.7.1
+    Released: 2014-11-28
+
+    - Update URL to domainFACTORY
+
 v1.7
     Released: 2014-11-24
 
