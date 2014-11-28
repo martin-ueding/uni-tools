@@ -5,4 +5,4 @@ cd ~/Dokumente/Studium/chaos-Übungszettel-disclaimer/
 
 prepend-disclaimer-to-pdf */*.pdf
 
-rsync -avhE --delete --exclude='*.bak' --delete-excluded ./ chaos:public_html/zettel/
+rsync -avhE --delete --exclude='*.bak' --delete-excluded ./ df:subdomains/bulk/abgaben/
