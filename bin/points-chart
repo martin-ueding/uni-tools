@@ -47,6 +47,7 @@ def main():
     fig.tight_layout()
 
     fig.savefig('points-{}.pdf'.format(options.module))
+    fig.savefig('points-{}.png'.format(options.module))
 
     print('Number of problem sets done:', len(done))
     print('Obtained points:', sum(obtained))
