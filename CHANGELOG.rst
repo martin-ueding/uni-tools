@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.8
+    Released: 2014-12-11
+
+    - Export PNG for the points as well
+
 v1.7.1
     Released: 2014-11-28
 
