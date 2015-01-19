@@ -216,7 +216,7 @@ def create_disclaimer_pdf(text):
         print(tf.name)
         command = ['bash', '-c', 'cd {} && pdflatex -batchmode {}'.format(os.path.dirname(tf.name), tf.name)]
         print(command)
-        subprocess.check_call(command)
+        subprocess.check_output(command)
 
     return tf.name.replace('.tex', '.pdf')
 
