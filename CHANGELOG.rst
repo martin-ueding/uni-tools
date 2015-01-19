@@ -1,8 +1,13 @@
-..  Copyright © 2013-2014 Martin Ueding <dev@martin-ueding.de>
+..  Copyright © 2013-2015 Martin Ueding <dev@martin-ueding.de>
 
 #########
 Changelog
 #########
+
+v1.8.1
+    Released: 2015-01-19
+
+    - Suppress output
 
 v1.8
     Released: 2014-12-11
@@ -50,3 +55,5 @@ v1.2
 
 v1.1
     - **Added**: *copy-korrigiert*
+
+.. vim: spell tw=79
