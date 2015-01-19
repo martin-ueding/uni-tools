@@ -17,6 +17,7 @@ import subprocess
 import tempfile
 
 import jinja2
+import termcolor
 
 PDF_PATTERN = re.compile(r'''
                          (?P<module>(math|physik|physics)\d{3})
@@ -213,9 +214,7 @@ def create_disclaimer_pdf(text):
         tf.write(text)
         tf.flush()
 
-        print(tf.name)
         command = ['bash', '-c', 'cd {} && pdflatex -batchmode {}'.format(os.path.dirname(tf.name), tf.name)]
-        print(command)
         subprocess.check_output(command)
 
     return tf.name.replace('.tex', '.pdf')
@@ -230,26 +229,34 @@ def check_for_disclaimer(filename):
 
 def handle_file(filename, options):
     has_disclaimer = check_for_disclaimer(filename)
-    if has_disclaimer and not options.upgrade:
-        return
 
-    module, language, reviewed = get_kind(os.path.basename(filename))
-    title, text = create_text(module, language, reviewed)
-    text = create_document(title, text)
-    disclaimer_pdf = create_disclaimer_pdf(text)
-    old_file = filename+'.bak'
-    shutil.move(filename, old_file)
-    command = [
-        'pdftk',
-        'A={}'.format(disclaimer_pdf),
-        'B={}'.format(old_file),
-        'cat',
-        'A1',
-        'B2-end' if has_disclaimer else 'B1-end',
-        'output', filename,
-    ]
-    subprocess.check_call(command)
-    os.remove(old_file)
+    upgraded = False
+
+    if not has_disclaimer or options.upgrade:
+        module, language, reviewed = get_kind(os.path.basename(filename))
+        title, text = create_text(module, language, reviewed)
+        text = create_document(title, text)
+        disclaimer_pdf = create_disclaimer_pdf(text)
+        old_file = filename+'.bak'
+        shutil.move(filename, old_file)
+        command = [
+            'pdftk',
+            'A={}'.format(disclaimer_pdf),
+            'B={}'.format(old_file),
+            'cat',
+            'A1',
+            'B2-end' if has_disclaimer else 'B1-end',
+            'output', filename,
+        ]
+        subprocess.check_call(command)
+        os.remove(old_file)
+
+        upgraded = True
+
+    return "{} {}".format(
+        os.path.basename(filename),
+        termcolor.colored('upgraded', 'yellow') if upgraded else termcolor.colored('ok', 'green')
+    )
 
 def main():
     options = _parse_args()
@@ -259,6 +266,9 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(6) as executor:
         for filename in options.filenames:
             futures.append(executor.submit(handle_file, filename, options))
+
+        for future in futures:
+            print(future.result())
 
 def _parse_args():
     """
