@@ -74,8 +74,8 @@ Praktikumsprotokolle
 {% else -%}
 Übungszettel
 {% endif -%}
-zu diesem Modul können auf \href{http://martin-ueding.de/de/university/{{ module
-}}/#pk_campaign=Zettel&pk_kwd={{ module }}}{http://martin-ueding.de/de/university/{{ module
+zu diesem Modul können auf \href{http://martin-ueding.de/de/university/bsc_physics/{{ module
+}}/#pk_campaign=Zettel&pk_kwd={{ module }}}{http://martin-ueding.de/de/university/bsc_physics/{{ module
 }}/} gefunden werden.
 
 Sofern im Dokuments nichts anderes angegeben ist: Dieses Werk von Martin Ueding
@@ -129,8 +129,8 @@ lab reports
 {% else -%}
 problem sets
 {% endif -%}
-for this module can be found at \href{http://martin-ueding.de/en/university/{{ module
-}}/#pk_campaign=Zettel&pk_kwd={{ module }}}{http://martin-ueding.de/de/university/{{ module
+for this module can be found at \href{http://martin-ueding.de/en/university/msc_physics/{{ module
+}}/#pk_campaign=Zettel&pk_kwd={{ module }}}{http://martin-ueding.de/de/university/msc_physics/{{ module
 }}/}.
 
 If not stated otherwise in the document itself: This work by Martin Ueding is
