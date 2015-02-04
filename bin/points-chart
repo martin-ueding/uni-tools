@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# Copyright © 2014 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2014-2015 Martin Ueding <dev@martin-ueding.de>
 
 import argparse
 
@@ -48,6 +48,7 @@ def main():
 
     fig.savefig('points-{}.pdf'.format(options.module))
     fig.savefig('points-{}.png'.format(options.module))
+    fig.savefig('points-{}.svg'.format(options.module))
 
     print('Number of problem sets done:', len(done))
     print('Obtained points:', sum(obtained))
