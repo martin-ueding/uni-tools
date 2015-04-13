@@ -20,7 +20,7 @@ import jinja2
 import termcolor
 
 PDF_PATTERN = re.compile(r'''
-                         (?P<module>(math|physik|physics)\d{3})
+                         (?P<module>(math|physik|physics)\d{3}|geometry)
                          -[^-]+
                          -(?P<kind>abgegeben|korrigiert|handed_in|reviewed)
                          \.pdf
@@ -75,7 +75,7 @@ Praktikumsprotokolle
 Übungszettel
 {% endif -%}
 zu diesem Modul können auf \href{http://martin-ueding.de/de/university/bsc_physics/{{ module
-}}/#pk_campaign=Zettel&pk_kwd={{ module }}}{http://martin-ueding.de/de/university/bsc_physics/{{ module
+}}/#pk_campaign=Zettel&pk_kwd={{ module }}}{http://martin-ueding.de/de/university/bsc\_physics/{{ module
 }}/} gefunden werden.
 
 Sofern im Dokuments nichts anderes angegeben ist: Dieses Werk von Martin Ueding
@@ -129,9 +129,8 @@ lab reports
 {% else -%}
 problem sets
 {% endif -%}
-for this module can be found at \href{http://martin-ueding.de/en/university/msc_physics/{{ module
-}}/#pk_campaign=Zettel&pk_kwd={{ module }}}{http://martin-ueding.de/de/university/msc_physics/{{ module
-}}/}.
+for this module can be found at \\ \href{http://martin-ueding.de/en/university/msc_physics/{{ module
+}}/#pk_campaign=Zettel&pk_kwd={{ module }}}{http://martin-ueding.de/de/university/msc\_physics/{{ module }}/}.
 
 If not stated otherwise in the document itself: This work by Martin Ueding is
 licensed under a \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative
@@ -214,8 +213,10 @@ def create_disclaimer_pdf(text):
         tf.write(text)
         tf.flush()
 
-        command = ['bash', '-c', 'cd {} && pdflatex -batchmode {}'.format(os.path.dirname(tf.name), tf.name)]
-        subprocess.check_output(command)
+        print(text)
+
+        command = ['bash', '-c', 'cd {} && pdflatex -halt-on-error {}'.format(os.path.dirname(tf.name), tf.name)]
+        subprocess.check_call(command)
 
     return tf.name.replace('.tex', '.pdf')
 
