@@ -4,10 +4,21 @@
 Changelog
 #########
 
-v1.9.0
+v1.11.0
     Released: 2015-06-06
 
     - Add work-on-problem-set script
+
+v1.10.0
+    Released: 2015-04-13
+
+    - Add geometry problem sets to the mix
+
+v1.9.0
+    Released: 2015-02-04
+
+    - Export points charts as SVG files
+    - Update URLs
 
 v1.8.1
     Released: 2015-01-19
