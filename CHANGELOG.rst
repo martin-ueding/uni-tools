@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.11.1
+    Released: 2015-06-06
+
+    - Add another Konsole window for git.
+
 v1.11.0
     Released: 2015-06-06
 
