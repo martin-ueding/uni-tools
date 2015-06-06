@@ -43,6 +43,7 @@ def main():
         subprocess.Popen(['xdg-open', last_file]),
         subprocess.Popen(['xdg-open', repo_root]),
         subprocess.Popen(['konsole', '-e', 'latex-edit', tex_file]),
+        subprocess.Popen(['konsole', '--workdir', repo_root]),
     ]
 
     for process in processes:
