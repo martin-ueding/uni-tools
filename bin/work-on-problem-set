@@ -1,0 +1,69 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+# Copyright © 2015 Martin Ueding <dev@martin-ueding.de>
+
+import argparse
+import re
+import subprocess
+import os
+
+
+def find_problem_sets(path, pattern):
+    set_path = os.path.join(path, 'Aufgabenzettel')
+    sets = os.listdir(set_path)
+    tuples = []
+    for set_ in sets:
+        m = pattern.match(set_)
+        if m:
+            tuples.append((int(m.group(1)), os.path.join(set_path, set_)))
+
+    tuples.sort()
+
+    return tuples[-1]
+
+def main():
+    options = _parse_args()
+
+    module_root = os.path.join(options.root, options.module)
+
+    pattern = re.compile(options.problem_regex)
+    last_number, last_file = find_problem_sets(module_root, pattern)
+
+    print(last_number, last_file)
+
+    repo_root = os.path.join(options.root, options.module, '{}-problem-sets'.format(options.module), '{:02d}'.format(last_number))
+
+    tex_file = os.path.join(options.root, options.module, '{}-problem-sets'.format(options.module), '{:02d}'.format(last_number), '{}-{:02d}-handed_in.tex'.format(options.module, last_number))
+    print(tex_file)
+
+    print(os.path.isfile(tex_file))
+
+    processes = [
+        subprocess.Popen(['xdg-open', last_file]),
+        subprocess.Popen(['xdg-open', repo_root]),
+        subprocess.Popen(['konsole', '-e', 'latex-edit', tex_file]),
+    ]
+
+    for process in processes:
+        process.wait()
+
+
+def _parse_args():
+    '''
+    Parses the command line arguments.
+
+    :return: Namespace with arguments.
+    :rtype: Namespace
+    '''
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('module')
+    parser.add_argument('--root', default=os.path.expanduser('~/Dokumente/Studium/Master_Science_Physik/'))
+    parser.add_argument('--problem-regex', default=r'\D+(\d+)\.pdf')
+    options = parser.parse_args()
+
+    return options
+
+
+if __name__ == '__main__':
+    main()
