@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.9.0
+    Released: 2015-06-06
+
+    - Add work-on-problem-set script
+
 v1.8.1
     Released: 2015-01-19
 
