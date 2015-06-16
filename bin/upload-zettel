@@ -1,8 +1,11 @@
 #!/usr/bin/fish
-# Copyright © 2014 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2014-2015 Martin Ueding <dev@martin-ueding.de>
+
+set staging ~/Build/eigene-webseite/martin-ueding.de/bulk/abgaben/
 
 cd ~/Dokumente/Studium/chaos-Übungszettel-disclaimer/
 
 prepend-disclaimer-to-pdf */*.pdf
 
-rsync -avhE --delete --exclude='*.bak' --delete-excluded ./ df:subdomains/bulk/abgaben/
+mkdir -p $staging
+rsync -avhE --delete --exclude='*.bak' --delete-excluded ./ $staging
