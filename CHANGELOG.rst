@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.12.0
+    Released: 2015-06-16
+
+    - Use staging area since I discontinued SSH access do my webspace.
+
 v1.11.1
     Released: 2015-06-06
 
