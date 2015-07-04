@@ -16,31 +16,44 @@ def main():
     sheet = data[:, 0]
     obtained = data[:, 1]
     obtainable = data[:, 2]
+    missed = np.maximum(0, obtainable - obtained)
+    bonus = np.maximum(0, obtained - obtainable)
+
+    bar_obtained = obtained - bonus
+    bar_missed = missed
+    bar_bonus = bonus
 
     done = obtained > 0
+    ratio_on_done = sum(obtained[done]) / sum(obtainable[done])
+
+    width = 0.3
 
     fig = pl.figure()
     ax1 = fig.add_subplot(2, 1, 1)
     ax2 = fig.add_subplot(2, 1, 2)
 
-    style = {
-        'marker': 'o',
-    }
-
     ax1.set_title('Problem set results for {}'.format(options.module))
 
-    ax1.plot(sheet[done], obtained[done], label='obtained', **style)
-    ax1.plot(sheet, obtainable, label='obtainable', **style)
-    ax1.set_ylabel('Points')
-    ax1.legend(loc='best')
-    ax1.grid(True)
-    ax1.margins(0.05, 0.05)
-    ax1.set_ylim(max(obtainable) * -0.05, max(obtainable) * 1.05)
+    ax1.bar(sheet[done] - width/2, bar_obtained[done], width, color='blue', label='obtained')
+    ax1.bar(sheet[done] - width/2, bar_missed[done], width, bottom=bar_obtained[done], color='orange', label='missed')
 
-    ax2.plot(sheet[done], obtained[done] / obtainable[done], **style)
+    if np.max(bar_bonus) > 0:
+        ax1.bar(sheet[done] - width/2, bar_bonus[done], width, bottom=bar_obtained[done], color='green', label='bonus')
+    ax1.set_ylabel('Points')
+    ax1.set_xticks(sheet)
+    ax1.legend(loc='best', prop={'size': 8})
+    ax1.yaxis.grid(True)
+    ax1.margins(0.05, 0.05)
+    #ax1.set_ylim(max(obtainable) * -0.05, max(obtainable + bonus) * 1.05)
+
+    ax2.plot(sheet[done], np.ones(sheet[done].shape) * ratio_on_done, linestyle='-', color='green')
+    ax2.bar(sheet[done] - width/2, obtained[done] / obtainable[done], width, color='blue')
+
+
     ax2.set_xlabel('Problem set')
     ax2.set_ylabel('Obtained ratio')
-    ax2.grid(True)
+    ax2.set_xticks(sheet)
+    ax2.yaxis.grid(True)
     ax2.set_xlim(ax1.get_xlim())
     ax2.set_ylim([-0.05, 1.05])
 
@@ -53,7 +66,7 @@ def main():
     print('Number of problem sets done:', len(done))
     print('Obtained points:', sum(obtained))
     print('Obtainable on done sets:', sum(obtainable[done]))
-    print('Ratio on done sets: {:.2f}'.format(sum(obtained[done]) / sum(obtainable[done])))
+    print('Ratio on done sets: {:.2f}'.format(ratio_on_done))
 
 def _parse_args():
     '''
