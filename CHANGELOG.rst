@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.12.1
+    Released: 2015-07-04
+
+    - Make points chart fancier.
+
 v1.12.0
     Released: 2015-06-16
 
