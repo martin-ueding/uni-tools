@@ -24,7 +24,7 @@ def main():
     bar_missed = missed
     bar_bonus = bonus
 
-    done = obtained > 0
+    done = obtained >= 0
     ratio_on_done = sum(obtained[done]) / sum(obtainable[done])
 
     width = 0.3
