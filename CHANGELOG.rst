@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.12.2
+    Released: 2015-07-04
+
+    - Fix criterion for done.
+
 v1.12.1
     Released: 2015-07-04
 
