@@ -35,8 +35,8 @@ def main():
 
     ax1.set_title('Problem set results for {}'.format(options.module))
 
-    ax1.bar(sheet[done] - width/2, bar_obtained[done], width, color='blue', label='obtained')
-    ax1.bar(sheet[done] - width/2, bar_missed[done], width, bottom=bar_obtained[done], color='orange', label='missed')
+    ax1.bar(sheet[done] - width/2, bar_obtained[done], width, color='black', label='obtained')
+    ax1.bar(sheet[done] - width/2, bar_missed[done], width, bottom=bar_obtained[done], color='0.9', label='missed')
 
     if np.max(bar_bonus) > 0:
         ax1.bar(sheet[done] - width/2, bar_bonus[done], width, bottom=bar_obtained[done], color='green', label='bonus')
@@ -48,7 +48,7 @@ def main():
     #ax1.set_ylim(max(obtainable) * -0.05, max(obtainable + bonus) * 1.05)
 
     ax2.plot(sheet[done], np.ones(sheet[done].shape) * ratio_on_done, linestyle='-', color='green')
-    ax2.bar(sheet[done] - width/2, ratio[done], width, color='blue')
+    ax2.bar(sheet[done] - width/2, ratio[done], width, color='black')
 
 
     ax2.set_xlabel('Problem set')
