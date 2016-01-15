@@ -1,8 +1,13 @@
-..  Copyright © 2013-2015 Martin Ueding <dev@martin-ueding.de>
+..  Copyright © 2013-2016 Martin Ueding <dev@martin-ueding.de>
 
 #########
 Changelog
 #########
+
+v1.13.0
+    Released: 2016-01-15 12:38:34 +0100
+
+    - Remove ``pdftk`` dependency and replace it with PyPDF2.
 
 v1.12.2
     Released: 2015-07-04
