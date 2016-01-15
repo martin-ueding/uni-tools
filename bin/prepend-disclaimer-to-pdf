@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# Copyright © 2014-2015 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2014-2016 Martin Ueding <dev@martin-ueding.de>
 
 '''
 Prepends a disclaimer page to all PDF files.
@@ -18,9 +18,10 @@ import tempfile
 
 import jinja2
 import termcolor
+import PyPDF2 as pypdf2
 
 PDF_PATTERN = re.compile(r'''
-                         (?P<module>(math|physik|physics)\d{3}|geometry)
+                         (?P<module>(math|physik|physics)\d{3,4}|geometry)
                          -[^-]+
                          -(?P<kind>abgegeben|korrigiert|handed_in|reviewed)
                          \.pdf
@@ -222,35 +223,41 @@ def create_disclaimer_pdf(text):
 
 def check_for_disclaimer(filename):
     try:
-        subprocess.check_output(['pdfgrep', r'\[disclaimer\]', filename])
+        output = subprocess.check_output(['pdfgrep', '-c', r'\[disclaimer\]', filename])
     except subprocess.CalledProcessError:
-        return False
+        count = 0
     else:
-        return True
+        count = int(output.decode().strip())
+
+    return count
 
 def handle_file(filename, options):
-    has_disclaimer = check_for_disclaimer(filename)
+    disclaimer_count = check_for_disclaimer(filename)
 
     upgraded = False
 
-    if not has_disclaimer or options.upgrade:
+    if disclaimer_count != 1 or options.upgrade:
         module, language, reviewed = get_kind(os.path.basename(filename))
         title, text = create_text(module, language, reviewed)
         text = create_document(title, text)
         disclaimer_pdf = create_disclaimer_pdf(text)
-        old_file = filename+'.bak'
-        shutil.move(filename, old_file)
-        command = [
-            'pdftk',
-            'A={}'.format(disclaimer_pdf),
-            'B={}'.format(old_file),
-            'cat',
-            'A1',
-            'B2-end' if has_disclaimer else 'B1-end',
-            'output', filename,
-        ]
-        subprocess.check_call(command)
-        os.remove(old_file)
+        old_file = filename
+
+        pdf_out = pypdf2.PdfFileWriter()
+
+        with open(old_file, 'rb') as h_old_file, open(disclaimer_pdf, 'rb') as h_disclaimer:
+            pdf_old = pypdf2.PdfFileReader(h_old_file)
+            pdf_disclaimer = pypdf2.PdfFileReader(h_disclaimer)
+
+            pdf_out.addPage(pdf_disclaimer.pages[0])
+
+            for page in pdf_old.pages[disclaimer_count:]:
+                pdf_out.addPage(page)
+
+            with open(filename + '.tmp', 'wb') as f:
+                pdf_out.write(f)
+
+        os.rename(filename + '.tmp', filename)
 
         upgraded = True
 
