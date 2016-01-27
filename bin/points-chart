@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# Copyright © 2014-2015 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2014-2016 Martin Ueding <dev@martin-ueding.de>
 
 import argparse
 
@@ -19,6 +19,8 @@ def main():
     missed = np.maximum(0, obtainable - obtained)
     bonus = np.maximum(0, obtained - obtainable)
     ratio = obtained / obtainable
+
+    running_mean = np.array([np.sum(obtained[:x]) / np.sum(obtainable[:x]) for x in range(1, len(obtained) + 1)])
 
     bar_obtained = obtained - bonus
     bar_missed = missed
@@ -39,7 +41,7 @@ def main():
     ax1.bar(sheet[done] - width/2, bar_missed[done], width, bottom=bar_obtained[done], color='0.9', label='missed')
 
     if np.max(bar_bonus) > 0:
-        ax1.bar(sheet[done] - width/2, bar_bonus[done], width, bottom=bar_obtained[done], color='green', label='bonus')
+        ax1.bar(sheet[done] - width/2, bar_bonus[done], width, bottom=bar_obtained[done], color='orange', label='bonus')
     ax1.set_ylabel('Points')
     ax1.set_xticks(sheet)
     ax1.legend(loc='best', prop={'size': 8})
@@ -47,7 +49,8 @@ def main():
     ax1.margins(0.05, 0.05)
     #ax1.set_ylim(max(obtainable) * -0.05, max(obtainable + bonus) * 1.05)
 
-    ax2.plot(sheet[done], np.ones(sheet[done].shape) * ratio_on_done, linestyle='-', color='green')
+    #ax2.plot(sheet[done], np.ones(sheet[done].shape) * ratio_on_done, linestyle='-', color='green')
+    ax2.plot(sheet[done], running_mean[done], linestyle='-', color='orange', marker='o', markersize=4)
     ax2.bar(sheet[done] - width/2, ratio[done], width, color='black')
 
 
