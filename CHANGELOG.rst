@@ -4,6 +4,11 @@
 Changelog
 #########
 
+v1.14.0
+    Released: 2016-04-08 21:23:09 +0200
+
+    - Add a running mean.
+
 v1.13.0
     Released: 2016-01-15 12:38:34 +0100
 
